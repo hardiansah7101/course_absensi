@@ -15,16 +15,12 @@ export const getThunkUser = createAsyncThunk('user/getThunkUser', async (_, thun
                 }
             } else {
                 await removeAuthStorage()
-                return {
-                    data: null,
-                    remember: false
-                }
             }
-        } else {
-            return {
-                data: null,
-                remember: false
-            }
+        }
+
+        return {
+            data: null,
+            remember: false
         }
     } catch (error) {
         return {

@@ -1,6 +1,6 @@
-import { NavigationContainer, useNavigation, StackActions, useRoute } from "@react-navigation/native";
-import { createStackNavigator, CardStyleInterpolators } from "@react-navigation/stack";
 import React, { Fragment, useEffect } from "react";
+import { NavigationContainer, useNavigation, StackActions } from "@react-navigation/native";
+import { createStackNavigator, CardStyleInterpolators } from "@react-navigation/stack";
 import routeList from "./list.route";
 import { useSelector, useDispatch } from "react-redux";
 import { Alert, Platform } from "react-native";
@@ -41,8 +41,7 @@ function StackNavigator() {
     }
 
     useEffect(() => {
-        console.log(user)
-        if (user.relogin) {
+        if (user.data && user.relogin) {
             confirmRelogin()
         }
     }, [user.relogin])
@@ -59,7 +58,6 @@ function StackNavigator() {
                 <Stack.Screen name="app-login" component={routeList.Login} />
                 <Stack.Screen name="app-register" component={routeList.Register} />
                 <Stack.Screen name="app-forgot-password" component={routeList.ForgotPassword} />
-                <Stack.Screen name="app-relogin-password" component={routeList.ReLoginPassword} />
 
                 {/* Home */}
                 <Stack.Screen name="app-home" component={routeList.Home} />

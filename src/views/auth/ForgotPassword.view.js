@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useRef, useState } from "react";
-import { Modal, Text, TouchableOpacity, View } from "react-native";
+import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Card, TextInput, Title, Button } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useDispatch, useSelector } from "react-redux";
@@ -11,6 +11,7 @@ import { ToastShow } from "../../helpers/toast.helper";
 import OTPTextInput from "react-native-otp-textinput";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import LoadingPage from "../../components/LoadingPage.component";
+import { wp } from "../../helpers/size.helper";
 
 export default function ForgotPassword({ navigation }) {
     const dispatch = useDispatch()
@@ -105,20 +106,20 @@ export default function ForgotPassword({ navigation }) {
     return (
         <View style={{ flex: 1, backgroundColor: defaultThemeColors.primary }}>
             <SafeAreaView style={{ flex: 1, justifyContent: "center" }}>
-                <Title style={{ textAlign: "center", color: defaultThemeColors.backdrop }}>Masukkan email kamu</Title>
-                <Card style={{ margin: 20, backgroundColor: 'transparent' }} elevation={0}>
+                <Title style={{ textAlign: "center", color: defaultThemeColors.surface, fontSize: wp(5) }}>Masukkan email kamu</Title>
+                <Card style={{ margin: wp(5), backgroundColor: 'transparent' }} elevation={0}>
                     <Card.Content>
                         <TextInput
                             label="Email"
-                            style={{ margin: 5 }}
+                            style={{ margin: wp(1), backgroundColor: defaultThemeColors.surface, color: defaultThemeColors.onSurface }}
                             value={email}
                             onChangeText={setEmail}
-                            left={<TextInput.Icon name="email" />}
+                            left={<TextInput.Icon color={defaultThemeColors.onSurface} name="email" />}
                         />
-                        <Button mode="contained" color={defaultThemeColors.backdrop} style={{ margin: 5, marginTop: 20 }} contentStyle={{ paddingVertical: 5 }} onPress={handleSendEmail}>
+                        <Button mode="contained" color={defaultThemeColors.backdrop} style={{ margin: wp(1), marginTop: wp(5), elevation: 0 }} contentStyle={{ paddingVertical: wp(1) }} labelStyle={{ fontSize: wp(3) }} onPress={handleSendEmail}>
                             Send
                         </Button>
-                        <Button style={{ alignSelf: "center" }} labelStyle={{ color: defaultThemeColors.backdrop }} onPress={() => navigation.goBack()}>
+                        <Button style={{ alignSelf: "center" }} labelStyle={{ color: defaultThemeColors.surface, fontSize: wp(3) }} onPress={() => navigation.goBack()}>
                             Back
                         </Button>
                     </Card.Content>
@@ -128,8 +129,8 @@ export default function ForgotPassword({ navigation }) {
             {/* Modal confirm otp */}
             <Modal visible={onVerifyOtp} animationType="slide" onRequestClose={() => setOnVerifyOtp(false)}>
                 <View style={{ flex: 1, backgroundColor: defaultThemeColors.primary, justifyContent: "center" }}>
-                    <Title style={{ textAlign: "center", color: defaultThemeColors.backdrop }}>Enter OTP Code</Title>
-                    <Card style={{ margin: 20, backgroundColor: 'transparent' }} elevation={0}>
+                    <Title style={{ textAlign: "center", color: defaultThemeColors.surface, fontSize: wp(5) }}>Enter OTP Code</Title>
+                    <Card style={{ margin: wp(5), backgroundColor: 'transparent' }} elevation={0}>
                         <Card.Content>
                             <OTPTextInput
                                 ref={otpRef}
@@ -137,14 +138,14 @@ export default function ForgotPassword({ navigation }) {
                                 handleTextChange={otp => otp.length == 4 && handleOtpConfirm(otp)}
                             />
 
-                            <Text style={{ textAlign: "center", marginTop: 20 }}>OTP code not send?</Text>
-                            <Button style={{ alignSelf: "center" }} labelStyle={{ color: defaultThemeColors.backdrop }} onPress={handleResendOtp}>
+                            <Text style={{ textAlign: "center", marginTop: wp(5), fontSize: wp(3), color: defaultThemeColors.backdrop }}>OTP code not send?</Text>
+                            <Button style={{ alignSelf: "center" }} labelStyle={{ color: defaultThemeColors.surface, fontSize: wp(3) }} onPress={handleResendOtp}>
                                 Resend OTP
                             </Button>
                         </Card.Content>
                     </Card>
-                    <TouchableOpacity activeOpacity={0.8} onPress={() => setOnVerifyOtp(false)} style={{ position: "absolute", margin: 40, top: 0 }}>
-                        <MaterialCommunityIcons name="arrow-left" size={20} />
+                    <TouchableOpacity activeOpacity={0.8} onPress={() => setOnVerifyOtp(false)} style={{ position: "absolute", margin: wp(10), top: 0 }}>
+                        <MaterialCommunityIcons name="arrow-left" size={wp(7)} color={defaultThemeColors.surface} />
                     </TouchableOpacity>
                 </View>
             </Modal>
@@ -152,36 +153,36 @@ export default function ForgotPassword({ navigation }) {
             {/* Modal update password */}
             <Modal visible={onUpdatePassword} animationType="slide" onRequestClose={() => setOnUpdatePassword(false)}>
                 <View style={{ flex: 1, backgroundColor: defaultThemeColors.primary, justifyContent: "center" }}>
-                    <Title style={{ textAlign: "center", color: defaultThemeColors.backdrop }}>Update password</Title>
-                    <Card style={{ margin: 20, backgroundColor: 'transparent' }} elevation={0}>
+                    <Title style={{ textAlign: "center", color: defaultThemeColors.surface, fontSize: wp(5) }}>Update password</Title>
+                    <Card style={{ margin: wp(5), backgroundColor: 'transparent' }} elevation={0}>
                         <Card.Content>
-                            <View style={{ paddingVertical: 10 }}>
+                            <View style={{ paddingVertical: wp(1) }}>
                                 <TextInput
                                     label="New Password"
                                     secureTextEntry={!showPassword}
                                     value={password}
                                     onChangeText={setPassword}
-                                    style={{ backgroundColor: 'white' }}
-                                    right={<TextInput.Icon name={!showPassword ? "eye-off" : "eye"} onPress={() => setShowPassword(!showPassword)} />}
+                                    style={styles.textInput}
+                                    right={<TextInput.Icon color={defaultThemeColors.onSurface} name={!showPassword ? "eye-off" : "eye"} onPress={() => setShowPassword(!showPassword)} />}
                                 />
                             </View>
-                            <View style={{ paddingVertical: 10 }}>
+                            <View style={{ paddingVertical: wp(1) }}>
                                 <TextInput
                                     label="Password Confirm"
                                     secureTextEntry={!showPasswordConfirm}
                                     value={passwordConfirm}
                                     onChangeText={setPasswordConfirm}
-                                    style={{ backgroundColor: 'white' }}
-                                    right={<TextInput.Icon name={!showPasswordConfirm ? "eye-off" : "eye"} onPress={() => setShowPasswordConfirm(!showPasswordConfirm)} />}
+                                    style={styles.textInput}
+                                    right={<TextInput.Icon color={defaultThemeColors.onSurface} name={!showPasswordConfirm ? "eye-off" : "eye"} onPress={() => setShowPasswordConfirm(!showPasswordConfirm)} />}
                                 />
                             </View>
-                            <Button mode="contained" color={defaultThemeColors.backdrop} style={{ margin: 5, marginVertical: 20 }} contentStyle={{ paddingVertical: 5 }} onPress={handleUpdatePassword}>
+                            <Button mode="contained" color={defaultThemeColors.backdrop} style={{ margin: wp(1), marginVertical: wp(5), elevation: 0 }} contentStyle={{ paddingVertical: wp(1) }} labelStyle={{ fontSize: wp(3) }} onPress={handleUpdatePassword}>
                                 Update Password
                             </Button>
                         </Card.Content>
                     </Card>
-                    <TouchableOpacity activeOpacity={0.8} onPress={() => setOnUpdatePassword(false)} style={{ position: "absolute", margin: 40, top: 0 }}>
-                        <MaterialCommunityIcons name="arrow-left" size={20} />
+                    <TouchableOpacity activeOpacity={0.8} onPress={() => setOnUpdatePassword(false)} style={{ position: "absolute", margin: wp(10), top: 0 }}>
+                        <MaterialCommunityIcons name="arrow-left" size={wp(7)} color={defaultThemeColors.surface} />
                     </TouchableOpacity>
                 </View>
             </Modal>
@@ -190,3 +191,8 @@ export default function ForgotPassword({ navigation }) {
         </View>
     )
 }
+
+const styles = StyleSheet.create({
+    textInput: { backgroundColor: defaultThemeColors.surface, color: defaultThemeColors.onSurface },
+
+})

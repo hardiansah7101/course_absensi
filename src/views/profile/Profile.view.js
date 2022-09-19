@@ -1,8 +1,7 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Alert, Image, Platform, Text, View } from "react-native";
 import { defaultThemeColors } from "../../helpers/colors.helper";
 import { Button, Headline, Subheading } from 'react-native-paper'
-import * as Animatable from 'react-native-animatable'
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs'
 import { useSelector, useDispatch } from "react-redux";
 import { thunkLogout } from "../../redux/action/user.action";
@@ -12,7 +11,6 @@ import { StackActions } from "@react-navigation/native";
 export default function Profile({ navigation }) {
     const tabBottomHeight = useBottomTabBarHeight()
     const user = useSelector(state => state.user.data)
-    const { loading } = useSelector(state => state.constant)
     const dispatch = useDispatch()
 
     const handleLogout = () => {
@@ -45,7 +43,7 @@ export default function Profile({ navigation }) {
 
     return (
         <View style={{ flex: 1, backgroundColor: defaultThemeColors.surface, padding: 20, paddingBottom: tabBottomHeight + 20, justifyContent: 'space-between' }}>
-            <Animatable.View useNativeDriver animation="fadeInDown" direction="alternate" style={{ backgroundColor: defaultThemeColors.primaryLight2, padding: 20, borderRadius: 20 }}>
+            <View style={{ backgroundColor: defaultThemeColors.primaryLight2, padding: 20, borderRadius: 20 }}>
                 <View style={{ flexDirection: 'row' }}>
                     <View style={{ height: 100, width: 100, borderRadius: 50, overflow: 'hidden', backgroundColor: defaultThemeColors.primaryLight1, marginRight: 20 }}>
                         <Image
@@ -75,13 +73,13 @@ export default function Profile({ navigation }) {
 
                     </View>
                 </View>
-            </Animatable.View>
+            </View>
             <View>
-                <Animatable.View useNativeDriver animation="fadeInUp" direction="alternate">
+                <View >
                     <Button mode="contained" color={defaultThemeColors.notification} style={{ margin: 5, elevation: 0 }} labelStyle={{ color: defaultThemeColors.surface }} contentStyle={{ paddingVertical: 5 }} onPress={handleLogoutConfirm}>
                         Logout
                     </Button>
-                </Animatable.View>
+                </View>
             </View>
         </View>
     )

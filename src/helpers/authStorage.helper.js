@@ -42,8 +42,6 @@ export const getDataUser = async () => {
 export const removeAuthStorage = async () => {
     try {
         await AsyncStorage.multiRemove([
-            // STORAGE_AUTH_TOKEN,
-            // STORAGE_REFRESH_TOKEN,
             STORAGE_DATA_LOGIN,
             STORAGE_DATA_USER
         ])

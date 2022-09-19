@@ -34,10 +34,10 @@ export default function HistoryDetail({ route: { params: { data } } }) {
         <View style={{ flex: 1, backgroundColor: defaultThemeColors.surface }}>
             <ScrollView showsVerticalScrollIndicator={false}>
                 <View style={{ margin: wp(5), borderRadius: 10, backgroundColor: defaultThemeColors.background, padding: wp(3), elevation: 3 }}>
-                    <View style={{ marginBottom: wp(5) }}>
+                    {/* <View style={{ marginBottom: wp(5) }}>
                         <Text style={{ fontSize: wp(3.6), fontWeight: 'bold' }}>Request ID</Text>
                         <Text style={{ fontSize: wp(3.6) }}>{data.id}</Text>
-                    </View>
+                    </View> */}
                     <View style={{ marginBottom: wp(5) }}>
                         <Text style={{ fontSize: wp(3.6), fontWeight: 'bold' }}>Request Date</Text>
                         <Text style={{ fontSize: wp(3.6) }}>{moment(data.date).format('DD MMMM YYYY')}   -   {moment(data.date).locale('en').format('HH:mm:ss A')}</Text>
@@ -54,7 +54,7 @@ export default function HistoryDetail({ route: { params: { data } } }) {
                         <Text style={{ fontSize: wp(3.6), fontWeight: 'bold' }}>Remarks</Text>
                         <Text style={{ fontSize: wp(3.6) }}>{data.alasan || '-'}</Text>
                     </View>
-                    {data.photourl && (
+                    {(data.photoUrl) && (
                         <View style={{ marginBottom: wp(5) }}>
                             <Text style={{ fontSize: wp(3.6), fontWeight: 'bold' }}>Photo Preview</Text>
                             <TouchableOpacity activeOpacity={0.8} style={{ padding: wp(2), alignSelf: 'flex-start' }} onPress={() => setShowPhoto(true)}>
@@ -78,8 +78,8 @@ export default function HistoryDetail({ route: { params: { data } } }) {
                 <View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: 'rgba(1,1,1,0.3)' }}>
                     <View style={{ width: wp(90), alignItems: "center", padding: wp(2), backgroundColor: defaultThemeColors.surface, borderRadius: 10, height: wp(110) }}>
                         <View style={{ flex: 1, width: '100%' }}>
-                            {data.photourl && (
-                                <Image source={{ uri: data.photourl }} style={{ width: '100%', height: '100%' }} resizeMode="contain" />
+                            {data.photoUrl && (
+                                <Image source={{ uri: data.photoUrl }} style={{ width: '100%', height: '100%' }} resizeMode="contain" />
                             )}
                         </View>
                         <Button mode="outlined" color={defaultThemeColors.notification} style={{ marginTop: wp(2) }} onPress={() => setShowPhoto(false)}>

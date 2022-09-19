@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { AppState, Image, ScrollView, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { defaultThemeColors } from "../../helpers/colors.helper";
 import { requestPermissionLocation } from "../../helpers/permissions.helper";
 import { ToastShow } from "../../helpers/toast.helper";
@@ -13,9 +13,11 @@ import { setLoading } from "../../helpers/constant.helper";
 import { callApi } from "../../helpers/request.helper";
 import SelectPenugasan from "../../components/SelectPenugasan.component";
 import { PopupMessage } from "../../components/Popup.component";
+import { wp } from "../../helpers/size.helper";
+import { MapViewLeaflet } from "../../components/Leaflet.component";
+import { getDistance } from "geolib";
 
 export default function CheckInOut({ navigation, route }) {
-    const [status] = Location.useForegroundPermissions();
     const dispatch = useDispatch()
     const [selectPenugasan, setSelectPenugasan] = useState(false)
 
@@ -54,28 +56,61 @@ export default function CheckInOut({ navigation, route }) {
         getLocation()
     }, [])
 
+    const uploadPhoto = async () => {
+        try {
+            const payload = new FormData()
+            payload.append('file', photo)
+
+            const response = await callApi().post(`v1/upload`, payload, {
+                'Content-Type': 'multipart/form-data'
+            })
+            if (response.success) {
+                return response.data.fileDownloadUri
+            }
+            return null
+        } catch (error) {
+            ToastShow('Something wrong!')
+            return null
+        }
+    }
+
     const handleSubmitCheck = async () => {
         setLoading(dispatch, true)
         try {
-            const payload = {
-                type: 'check_' + route.params.type,
-                alasan: remark,
-                penugasan: { id: penugasan.id },
-                photourl: photo.base64,
-                place_location: placeLocation,
-                latitude: location.latitude,
-                longitude: location.longitude,
+            if (placeLocation == 'in the office') {
+                const distance = getDistance(location, {
+                    latitude: -6.0634241,
+                    longitude: 106.1196943
+                })
+
+                if (distance > 100) {
+                    ToastShow('Your location is too far above 100 meters from office!')
+                    setLoading(dispatch, false)
+                    return
+                }
             }
 
-            const response = await callApi().post(`v1/absensi/save`, payload)
+            const dataPhoto = await uploadPhoto()
+            if (dataPhoto) {
+                const payload = {
+                    type: 'check_' + route.params.type,
+                    alasan: remark,
+                    penugasan: { id: penugasan.id },
+                    photoUrl: dataPhoto,
+                    place_location: placeLocation,
+                    latitude: location.latitude,
+                    longitude: location.longitude,
+                }
 
-            if (response.success) {
-                ToastShow('Your check in submited!')
-                setOnSubmited(true)
-            } else {
-                ToastShow(response.message)
+                const response = await callApi().post(`v1/absensi/save`, payload)
+
+                if (response.success) {
+                    ToastShow('Your check in submited!')
+                    setOnSubmited(true)
+                } else {
+                    ToastShow(response.message)
+                }
             }
-
             setLoading(dispatch, false)
         } catch (error) {
             ToastShow('Something wrong!')
@@ -86,55 +121,45 @@ export default function CheckInOut({ navigation, route }) {
     return (
         <View style={{ flex: 1, backgroundColor: defaultThemeColors.surface }}>
             <ScrollView showsVerticalScrollIndicator={false}>
-                <View style={{ padding: 20 }}>
-                    <View style={{ height: 200, borderRadius: 20, overflow: 'hidden', backgroundColor: 'lightblue' }}>
-                        <MapView
-                            style={{ flex: 1 }}
-                            region={{
-                                latitude: location?.latitude ?? -6.200000,
-                                longitude: location?.longitude ?? 106.816666,
-                                latitudeDelta: location?.latitude ? 0.0022 : 0.04,
-                                longitudeDelta: location?.longitude ? 0.0001 : 0.02,
-                            }} zoomEnabled={false} scrollEnabled={false} zoomTapEnabled={false} >
-                            {location && (
-                                <Marker coordinate={location} >
-                                    <MaterialCommunityIcons name="tooltip-account" color={defaultThemeColors.primary} size={40} />
-                                </Marker>
-                            )}
-                        </MapView>
+                <View style={{ padding: wp(5) }}>
+                    <View style={{ height: wp(40), borderRadius: 2, overflow: 'hidden', backgroundColor: 'lightblue', justifyContent: "center" }}>
+                        {location ? <MapViewLeaflet latitude={location.latitude} longitude={location.longitude} /> : <ActivityIndicator size={wp(5)} style={{ alignSelf: "center" }} />}
                     </View>
-                    <View style={{ paddingVertical: 30 }}>
-                        <Title style={{ paddingHorizontal: 5 }}>Location</Title>
+                    <TouchableOpacity activeOpacity={0.7} style={{ alignSelf: "center", marginVertical: wp(1) }} onPress={getLocation}>
+                        <Text style={{ fontSize: wp(3), fontWeight: 'bold', color: defaultThemeColors.primary, borderBottomWidth: 1, borderBottomColor: defaultThemeColors.primary, paddingVertical: wp(1) }}>REFRESH LOCATION</Text>
+                    </TouchableOpacity>
+                    <View style={{ paddingVertical: wp(6) }}>
+                        <Title style={{ paddingHorizontal: wp(1), fontSize: wp(4), color: defaultThemeColors.onSurface }}>Location</Title>
                         <View style={{ flexDirection: 'row' }}>
-                            <TouchableOpacity style={{ flexDirection: 'row', alignItems: "center", marginTop: 5, marginRight: 10 }} onPress={() => {
+                            <TouchableOpacity style={{ flexDirection: 'row', alignItems: "center", marginTop: wp(1), marginRight: wp(3) }} onPress={() => {
                                 setPlaceLocation('in the office')
                             }}>
                                 <Checkbox status={placeLocation == 'in the office' ? 'checked' : 'unchecked'} color={defaultThemeColors.primary} uncheckedColor={defaultThemeColors.text} />
-                                <Subheading style={{ textAlign: "center", color: defaultThemeColors.text }}>In the office</Subheading>
+                                <Subheading style={{ textAlign: "center", fontSize: wp(3), color: defaultThemeColors.onSurface }}>In the office</Subheading>
                             </TouchableOpacity>
-                            <TouchableOpacity style={{ flexDirection: 'row', alignItems: "center", marginTop: 5, marginRight: 10 }} onPress={() => {
+                            <TouchableOpacity style={{ flexDirection: 'row', alignItems: "center", marginTop: wp(1), marginRight: wp(3) }} onPress={() => {
                                 setPlaceLocation('outside the office')
                             }}>
                                 <Checkbox status={placeLocation == 'outside the office' ? 'checked' : 'unchecked'} color={defaultThemeColors.primary} uncheckedColor={defaultThemeColors.text} />
-                                <Subheading style={{ textAlign: "center", color: defaultThemeColors.text }}>Outside the office</Subheading>
+                                <Subheading style={{ textAlign: "center", fontSize: wp(3), color: defaultThemeColors.onSurface }}>Outside the office</Subheading>
                             </TouchableOpacity>
                         </View>
                     </View>
                     {photo && (
-                        <View style={{ marginVertical: 20, borderRadius: 5, backgroundColor: defaultThemeColors.background, padding: 20, alignSelf: "center" }}>
-                            <Image source={{ uri: photo.uri }} style={{ height: 240, width: 180 }} resizeMode="contain" />
+                        <View style={{ marginVertical: wp(5), borderRadius: wp(1), backgroundColor: defaultThemeColors.background, padding: wp(5), alignSelf: "center" }}>
+                            <Image source={{ uri: photo.uri }} style={{ height: wp(80), width: wp(60) }} resizeMode="contain" />
                         </View>
                     )}
-                    <Button mode="contained" color={defaultThemeColors.notification} style={{ margin: 10, elevation: 0 }} labelStyle={{ color: defaultThemeColors.surface }} disabled={!location || !placeLocation} contentStyle={{ paddingVertical: 5 }} onPress={() => setOnTakePhoto(true)}>
+                    <Button mode="contained" color={defaultThemeColors.notification} style={{ margin: wp(3), elevation: 0 }} labelStyle={{ color: defaultThemeColors.surface, fontSize: wp(3) }} disabled={!location || !placeLocation} contentStyle={{ paddingVertical: wp(1) }} onPress={() => setOnTakePhoto(true)}>
                         {photo ? "Retake Photo" : "Take Photo"}
                     </Button>
 
-                    <TouchableOpacity activeOpacity={0.8} style={{ marginVertical: 10 }} onPress={() => setSelectPenugasan(true)} disabled={!location || !placeLocation}>
+                    <TouchableOpacity activeOpacity={0.8} style={{ marginVertical: wp(3) }} onPress={() => setSelectPenugasan(true)} disabled={!location || !placeLocation}>
                         <TextInput
                             label="Select Penugasan"
                             value={penugasan?.deskripsi || ''}
                             editable={false}
-                            style={{ backgroundColor: 'white' }}
+                            style={{ backgroundColor: defaultThemeColors.surface, color: defaultThemeColors.onSurface }}
                         />
                     </TouchableOpacity>
 
@@ -144,9 +169,9 @@ export default function CheckInOut({ navigation, route }) {
                         onChangeText={setRemark}
                         multiline
                         disabled={!location || !placeLocation}
-                        style={{ backgroundColor: 'white', marginVertical: 20 }}
+                        style={{ backgroundColor: defaultThemeColors.surface, color: defaultThemeColors.onSurface, marginVertical: wp(5) }}
                     />
-                    <Button mode="contained" color={defaultThemeColors.accent} style={{ margin: 10, elevation: 0 }} labelStyle={{ color: defaultThemeColors.surface }} disabled={!location || !photo || !penugasan} contentStyle={{ paddingVertical: 5 }} onPress={handleSubmitCheck}>
+                    <Button mode="contained" color={defaultThemeColors.accent} style={{ margin: wp(3), elevation: 0 }} labelStyle={{ color: defaultThemeColors.surface, fontSize: wp(3) }} disabled={!location || !photo || !penugasan} contentStyle={{ paddingVertical: wp(1) }} onPress={handleSubmitCheck}>
                         Check {route.params.type}
                     </Button>
                 </View>
@@ -156,7 +181,9 @@ export default function CheckInOut({ navigation, route }) {
             <SelectPenugasan stateOnSelect={[selectPenugasan, setSelectPenugasan]} callbackSetStateData={setPenugasan} />
 
             {/* Take photo */}
-            <Camera stateVisible={onTakePhoto} stateChangeVisible={setOnTakePhoto} stateSetResult={setPhoto} base64={true} />
+            {onTakePhoto && (
+                <Camera stateVisible={onTakePhoto} stateChangeVisible={setOnTakePhoto} stateSetResult={setPhoto} base64={true} />
+            )}
 
             {/* On Submited */}
             <PopupMessage visible={onSubmited} message={`Your Check-${route.params?.type} submited!`} onBtnPress={() => {

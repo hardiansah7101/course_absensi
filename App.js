@@ -9,11 +9,21 @@ import moment from 'moment'
 import "moment/min/locales"
 moment.locale('id')
 
+const theme = {
+  ...DefaultTheme,
+  roundess: 2,
+  version: 3,
+  colors: {
+    ...DefaultTheme.colors,
+    ...defaultThemeColors
+  }
+}
+
 export default function App() {
   return (
     <Provider store={store}>
       <StatusBar style="light" />
-      <PaperProvider>
+      <PaperProvider theme={theme}>
         <Route />
       </PaperProvider>
     </Provider>

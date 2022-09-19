@@ -19,7 +19,7 @@ export const PopupMessage = ({
     return (
         <Modal visible={visible} transparent animationType="slide">
             <View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: 'rgba(1,1,1,0.4)' }}>
-                <View style={{ width: wp(80), alignItems: "center", backgroundColor: defaultThemeColors.surface, padding: wp(10), borderRadius: 20, elevation: 3 }}>
+                <View style={{ width: wp(80), alignItems: "center", backgroundColor: defaultThemeColors.surface, padding: wp(10), borderRadius: wp(3), elevation: 3 }}>
                     <MaterialCommunityIcons name={iconName} size={wp(20)} color={color} />
 
                     <Text style={{ fontSize: wp(4), fontWeight: 'bold', marginBottom: wp(10) }}>{message}</Text>

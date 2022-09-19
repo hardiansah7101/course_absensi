@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "course_absensi",
+    "name": "Absensi",
     "slug": "course_absensi",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -8,7 +8,7 @@
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/splash.png",
-      "resizeMode": "contain",
+      "resizeMode": "cover",
       "backgroundColor": "#ffffff"
     },
     "updates": {
@@ -29,10 +29,17 @@
         "googleMaps": {
           "apiKey": "AIzaSyCSEHAlGGSEc4ZDxyYe6A9jsLFmI0WCEag"
         }
-      }
+      },
+      "package": "com.winners.absensi"
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "90ec4c69-7bcf-4672-bbc2-57dfddf30f56"
+      }
+    },
+    "plugins": ["@react-native-google-signin/google-signin"]
   }
 }

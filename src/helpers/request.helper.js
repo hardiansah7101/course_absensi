@@ -3,6 +3,8 @@ import axios from 'axios'
 import { API_URL } from "../configs/baseurl.config"
 import { store } from "../redux/store"
 import { counterUser } from "../redux/counter/user.counter"
+import { googleSigninConfig } from "../configs/googleSignin.config"
+import { GoogleSignin} from '@react-native-google-signin/google-signin';
 
 export const errorResponse = async (error) => {
     console.log(error)
@@ -38,6 +40,19 @@ export const callApi = () => {
         try {
             const loginData = await getLoginData()
             if (loginData.remember == 0) {
+                if (loginData.google_token) {
+                    try {
+                        GoogleSignin.configure(googleSigninConfig);
+                        await GoogleSignin.hasPlayServices();
+                        if (await GoogleSignin.isSignedIn()) {
+                            await GoogleSignin.signOut()
+                        }
+                    } catch (error) {
+                        if (await GoogleSignin.isSignedIn()) {
+                            await GoogleSignin.signOut()
+                        }
+                    }
+                }
                 return await reloginResponse()
             }
             // if (!loginData.refresh_token) {
