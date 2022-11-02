@@ -2,8 +2,5 @@
   <string name="app_name">Absensi</string>
   <string name="expo_splash_screen_resize_mode" translatable="false">cover</string>
   <string name="expo_splash_screen_status_bar_translucent" translatable="false">false</string>
-  <!-- Dev -->
   <string name="server_client_id">985707925670-rf382iakju62a1gujk2bvrsckfbq1on7.apps.googleusercontent.com</string>
-  <!-- Prod -->
-  <!-- <string name="server_client_id">985707925670-p29vl7o1852e4lgjmtt56andu5frdlqt.apps.googleusercontent.com</string> -->
 </resources>

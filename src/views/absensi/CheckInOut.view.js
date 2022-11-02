@@ -79,8 +79,8 @@ export default function CheckInOut({ navigation, route }) {
         try {
             if (placeLocation == 'in the office') {
                 const distance = getDistance(location, {
-                    latitude: -6.0634241,
-                    longitude: 106.1196943
+                    latitude: -6.2245506,
+                    longitude: 106.8403731
                 })
 
                 if (distance > 100) {
